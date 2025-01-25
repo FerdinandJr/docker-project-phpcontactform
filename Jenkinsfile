@@ -8,6 +8,7 @@ pipeline {
         DotEnvFile = '.env'
         Dimage = 'barks_meows_paradise1'
         DOCKERHUB_CREDENTIALS = credentials('ferdinandjrdocker')
+        DockerImageTag = "${ImageRegistry}/${JOB_NAME}:${BUILD_NUMBER}"
     }
 
     stages {
@@ -16,7 +17,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image..."
-                    sh 'docker build -t ferdinandjrdocker/barks_meows_paradise1:1.0 .'
+                    sh 'docker build -t ${DockerImageTag} .'
                 }
             }
         }
@@ -35,10 +36,11 @@ pipeline {
             steps {
                 script {
                     echo "Pushing Image to DockerHub..."
-                        sh "docker push ${ImageRegistry}/${Dimage}:1.0 "
+                        sh "docker push ${DockerImageTag} "
                     }
                 }
             }
+
         stage("deployCompose") {
             steps {
                 script {
@@ -47,6 +49,8 @@ pipeline {
                         // Upload files once to reduce redundant SCP commands
                         sh """
                         scp -o StrictHostKeyChecking=no ${DockerComposeFile} ubuntu@${EC2_IP}:/home/ubuntu
+                        export DC_IMAGE_NAME=${DockerImageTag} && \
+                        echo ${DC_IMAGE_NAME} && \
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} down"
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} up -d"
                         """
