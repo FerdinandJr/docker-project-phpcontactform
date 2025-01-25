@@ -50,7 +50,6 @@ pipeline {
                         sh """
                         scp -o StrictHostKeyChecking=no ${DockerComposeFile} ubuntu@${EC2_IP}:/home/ubuntu
                         export DC_IMAGE_NAME=${DockerImageTag} && \
-                        echo ${DC_IMAGE_NAME} && \
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} down"
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} up -d"
                         """
