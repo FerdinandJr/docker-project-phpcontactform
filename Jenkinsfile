@@ -6,7 +6,7 @@ pipeline {
         EC2_IP = '18.136.120.126'
         DockerComposeFile = 'docker-compose.yml'
         DotEnvFile = '.env'
-        Dimage = 'ferdinandjrdocker'
+        Dimage = 'ferdinandjrdocker1'
         DOCKERHUB_CREDENTIALS = credentials('ferdinandjrdocker')
     }
 
@@ -16,7 +16,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image..."
-                    sh 'docker build -t ferdinandjrdocker/barks_meows_paradise1:1.0 .'
+                    sh 'docker build -t ferdinandjrdocker1/barks_meows_paradise1:1.0 .'
                 }
             }
         }
