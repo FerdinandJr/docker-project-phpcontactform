@@ -48,10 +48,15 @@ pipeline {
                     sshagent(['ec2']) {
                         // Upload files once to reduce redundant SCP commands
                         sh """
+                        # Copy files to EC2 instance
                         scp -o StrictHostKeyChecking=no ${DockerComposeFile} ubuntu@${EC2_IP}:/home/ubuntu
-                        export DC_IMAGE_NAME=${DockerImageTag} && \
-                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} down"
-                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} up -d"
+
+                        # Pull the latest Docker image and restart services
+                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "
+                            export DC_IMAGE_NAME=${DockerImageTag} && \
+                            docker compose -f /home/ubuntu/${DockerComposeFile} down && \
+                            docker compose -f /home/ubuntu/${DockerComposeFile} up -d
+                        "
                         """
                     }
                 }
