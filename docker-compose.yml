@@ -2,7 +2,7 @@ services:
   # PHP Application
   php-app:
     image: ${DC_IMAGE_NAME}
-    container_name: php-app
+    container_name: ${DC_IMAGE_NAME}
     ports:
       - "80:80"  # Expose port 80 on the container to port 8080 on localhost
     environment:
