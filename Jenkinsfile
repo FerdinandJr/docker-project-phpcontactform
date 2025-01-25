@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         ImageRegistry = 'ferdinandjrdocker'
-        EC2_IP = '18.136.120.126'
+        EC2_IP = '18.139.84.36'
         DockerComposeFile = 'docker-compose.yml'
         DotEnvFile = '.env'
         Dimage = 'barks_meows_paradise1'
@@ -39,6 +39,22 @@ pipeline {
                     }
                 }
             }
+        stage("deployCompose") {
+            steps {
+                script {
+                    echo "Deploying with Docker Compose..."
+                    sshagent(['ec2']) {
+                        // Upload files once to reduce redundant SCP commands
+                        sh """
+                        scp -o StrictHostKeyChecking=no ubuntu@${EC2_IP}:/home/ubuntu
+                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} down"
+                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} "docker compose -f /home/ubuntu/${DockerComposeFile} up -d"
+                        """
+                    }
+                }
+            }
+        }
+        
         }
 
     
