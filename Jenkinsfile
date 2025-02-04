@@ -11,6 +11,10 @@ pipeline {
         DockerImageTag = "${ImageRegistry}/${JOB_NAME}:${BUILD_NUMBER}"
     }
 
+    tools {
+    git 'GitInstallationName'
+}
+
     stages {
 
         stage("buildImage") {
