@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image..."
-                    sh 'sudo docker build -t ${DockerImageTag} .'
+                    sh 'docker build -t ${DockerImageTag} .'
                 }
             }
         }
