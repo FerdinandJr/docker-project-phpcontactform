@@ -12,7 +12,7 @@ pipeline {
     }
 
     tools {
-    git 'GitInstallationName'
+    git 'Default'
 }
 
     stages {
